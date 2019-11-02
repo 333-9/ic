@@ -60,11 +60,11 @@ extern long prev_value;
 "<<=" return A_lsh;
 ">>=" return A_rsh;
 
-[-+*/()|&^=?:!<>~]  return *yytext;
+[-+*/%|&^()=?:!<>~]  return *yytext;
 
 (#.*\n|\n)    return EOL;
 <<EOF>>       return L_EOF;
-[ \t]+  /* - */ ;
 
+[ \t]+  ;
 
 %%
