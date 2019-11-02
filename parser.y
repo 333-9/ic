@@ -22,7 +22,6 @@ void print_bit(long);
 %token INTIGER
 %token EOL L_EOF
 %token QUIT
-%token HELP
 %token CLEAR
 %token F_dec F_hex F_oct F_bin F_chr
 %token '(' ')'
@@ -43,7 +42,7 @@ void print_bit(long);
 %%
 
 
-program:L_EOF              { putc('\n', stderr); return 3; }
+program:L_EOF              { putc('\n', stderr); return 2; }
 |	EOL                { return 0; }
 |	command EOL        { return 0; }
 |	expr EOL           { prev_value = $1; printf("%li\n", $1); return 0; }
@@ -102,8 +101,7 @@ assign:	VAR              { $$ = vars[$1]; }
 |	VAR A_rsh expr   { $$ = vars[$1] >>= $3; }
 ;
 
-func:
-	F_dec '(' expr ')'    { $$ = $3; printf("%li\n", $3); }
+func:	F_dec '(' expr ')'    { $$ = $3; printf("%li\n", $3); }
 |	F_hex '(' expr ')'    { $$ = $3; printf("0x%lx\n", $3); }
 |	F_oct '(' expr ')'    { $$ = $3; printf("0%lo\n", $3); }
 |	F_bin '(' expr ')'    { $$ = $3; print_bit($3); }
@@ -111,7 +109,6 @@ func:
 ;
 
 command: QUIT    { return 3; }
-|	HELP     { return 3; }
 |	CLEAR    { fputs("\033[H\033[2J", stderr); }
 ;
 

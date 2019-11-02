@@ -15,7 +15,6 @@ extern long prev_value;
 
 
 "quit"|"exit" { return QUIT; }
-"help"        { return HELP; }
 "clear"       { return CLEAR; }
 
 "dec"         { return F_dec; }

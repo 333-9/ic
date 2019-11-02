@@ -12,7 +12,7 @@
 
 
 #define VERSION 0
-#define BUILD   1
+#define BUILD   2
 #define HELP_STR \
 "calc -[pPVh]
   -p show prompt
@@ -41,7 +41,7 @@ main(int argc, char *argv[])
 		};
 	};
 	do {
-		if (show_cursor) fputs(ps1, stderr);
+		if (show_prompt) fputs(ps1, stderr);
 		ret = yyparse();
 		if (!exit_on_err && ret != 3) ret = 0;
 	} while (!ret);
