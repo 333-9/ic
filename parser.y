@@ -12,7 +12,8 @@ long prev_value = 0;
 
 #define DIV_Z(a) if (!a) { yyerror("division by zero error"); return 1; }
 int yylex();
-int yyerror(char *);
+void yyerror(char *);
+
 long lpow(long, short);
 void print_bit(long);
 %}
@@ -142,9 +143,14 @@ print_bit(long n) {
 }
 
 
-int
+void
 yyerror(char *s)
 {
+	int i;
 	fputs(s, stderr);
 	putc('\n', stderr);
+	do {
+		i = yylex();
+		if (i == L_EOF) exit(1);
+	} while (i != EOL);
 }

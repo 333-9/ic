@@ -1,4 +1,4 @@
-calc: main.c y.tab.o scanner.o
+calc: main.c y.tab.o scanner.o config.h
 	tcc -o $@ main.c scanner.o y.tab.o
 
 scanner.o:
