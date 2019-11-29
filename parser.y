@@ -15,7 +15,7 @@ int yylex();
 void yyerror(char *);
 
 long lpow(long, short);
-void print_bit(long);
+void print_bin(long);
 %}
 
 %token VAR
@@ -104,7 +104,7 @@ assign:	VAR              { $$ = vars[$1]; }
 func:	F_dec '(' expr ')'    { $$ = $3; printf("%li\n", $3); }
 |	F_hex '(' expr ')'    { $$ = $3; printf("0x%lx\n", $3); }
 |	F_oct '(' expr ')'    { $$ = $3; printf("0%lo\n", $3); }
-|	F_bin '(' expr ')'    { $$ = $3; print_bit($3); }
+|	F_bin '(' expr ')'    { $$ = $3; print_bin($3); }
 |	F_chr '(' expr ')'    { $$ = $3; printf("%lc\n", $3); }
 ;
 
@@ -123,7 +123,7 @@ lpow(long a, short b) {
 
 
 void
-print_bit(long n) {
+print_bin(long n) {
 	unsigned long bit = 1;
 	int zf = 0;
 	fputs("0b", stdout);

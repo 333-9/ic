@@ -14,4 +14,6 @@ clear:
 	rm -f scanner.c
 
 install: calc
-	mv -f ./calc ~/.bin/
+	mkdir -p /usr/local/bin/
+	cp -f calc /usr/local/bin/
+	chmod 775 /usr/local/bin/calc
