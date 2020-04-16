@@ -16,57 +16,51 @@
 long prev_val = 0;
 long reg_val[10] = { 0 };
 
-long parse_f();
-long parse_a();
+long parse_term();
+long parse_expr();
 
 long
-parse_f()
+parse_term()
 {
 	long val;
 	char c;
-	c = getc(stdin);
-	while (c == ' ' || c == '\t') {
-		c = getc(stdin);
-	};
-	if (c == '_') {
-		val = prev_val;
-	} else if (c >='0' && c <='9') {
-		val = 0;
-		for (;;) {
-			val = val*10 + c - '0';
+	do  c = getc(stdin);
+	while (c == ' ' || c == '\t');
+	ungetc(c, stdin);
+	// scanf consumes '+' & '-'
+	if (fscanf(stdin, "%li", &val) < 1) {
+		if (c != '+' && c != '-')
+			do  c = getc(stdin);
+			while (c == ' ' || c == '\t');
+		switch (c) {
+		case '_':  val = prev_val; break;
+		case '-':  val = - parse_term(); break;
+		case '+':  val = + parse_term(); break;
+		case '~':  val = ~ parse_term(); break;
+		case '#':
+			ungetc(c, stdin);
+			return 0;
+		case '$':
 			c = getc(stdin);
-			if (c <'0' || c >'9') {
-				ungetc(c, stdin);
-				break;
-			};
+			if (c < '0' || c > '9')
+				errx(1, "digit expected, not %c", c);
+			val = reg_val[c -'0'];
+			break;
+		case '(':
+			val = +parse_expr();
+			if (getc(stdin) != ')')
+				errx(1, "')' expected");
+			break;
+		case ')':  errx(1, "')' unexpected");
+		default:   errx(1, "unknown token %c", c);
 		};
-	} else switch (c) {
-	case '-':  val = -parse_f(); break;
-	case '+':  val = +parse_f(); break;
-	case '#':
-		ungetc(c, stdin);
-		return 0;
-	case '$':
-		c = getc(stdin);
-		if (c < '0' || c > '9')
-			errx(1, "digit expected");
-		val = reg_val[c -'0'];
-		break;
-	case '(':  val = +parse_a();
-		if (getc(stdin) != ')')
-			errx(1, "')' expected");
-		break;
-	case ')':  errx(1, "')' unexpected");
-	default:   errx(1, "unknown token");
 	};
-	c = getc(stdin);
-	while (c == ' ' || c == '\t') {
+	for (c = ' '; c == ' ' || c == '\t'; )
 		c = getc(stdin);
-	};
 	switch (c) {
-	case '*': return val * parse_f();
-	case '/': return val / parse_f();
-	case '%': return val % parse_f();
+	case '*': return val * parse_term();
+	case '/': return val / parse_term();
+	case '%': return val % parse_term();
 	default:
 		ungetc(c, stdin);
 		return val;
@@ -75,26 +69,38 @@ parse_f()
 
 
 long
-parse_a()
+parse_expr()
 {
 	int c;
 	long val;
 	c = getc(stdin);
 	if (c == '\n' || c <= 0) return 0;
 	ungetc(c, stdin);
-	val = parse_f();
+	val = parse_term();
 	for (;;) {
 		c = getc(stdin);
 		switch (c) {
 		case '\t': // -->
 		case ' ':  break;
-		case '+': val += parse_f(); break;
-		case '-': val -= parse_f(); break;
+		case '<':
+		case '>':
+			if (getc(stdin) != c)
+				errx(1, "expected %c", c);
+			if (c == '<')
+				val <<= parse_term();
+			else
+				val >>= parse_term();
+			break;
+		case '&': val &= parse_term(); break;
+		case '|': val |= parse_term(); break;
+		case '^': val ^= parse_term(); break;
+		case '+': val += parse_term(); break;
+		case '-': val -= parse_term(); break;
 		case '=':
 			if (val < 10)
-				return reg_val[val] = parse_a();
+				return reg_val[val] = parse_expr();
 			else
-				errx(1, "register inde too high");
+				errx(1, "register index too high");
 		case '#':
 			ungetc(c, stdin);
 			return prev_val;
@@ -102,7 +108,7 @@ parse_a()
 		case '\n':
 			ungetc(c, stdin);
 		case -1:  return val;
-		default:  errx(1, "unknown token");
+		default:  errx(1, "unknown token %c", c);
 		};
 	};
 }
@@ -131,7 +137,7 @@ main(int argc, char *argv[])
 		case 'd': form = "%d\n"; goto endline;
 		default: ungetc(c, stdin); break;
 		};
-		prev_val = parse_a();
+		prev_val = parse_expr();
 	endline:
 		c = getc(stdin);
 		if (c == '#') {

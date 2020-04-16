@@ -1,25 +1,21 @@
 CC = clang
 
-calc: parser.c config.h
+
+ic: parser.c config.h
 	$(CC) -o $@ $<
 
-#scanner.o: y.tab.o
-#y.tab.c: parser.y
-#	yacc -d parser.y
-#y.tab.h: y.tab.c
-#y.tab.o: y.tab.c y.tab.h
-#
+
+
 .PHONY: clear install test
 
-
-test: calc
-	cat test.txt | ./calc
+test: ic
+	cat test.txt | ./ic
 
 clean:
 	rm -f *.o
-	rm -f scanner.c
+	rm -f ic
 
-install: calc
-	mkdir -p /usr/local/bin/
-	cp -f calc /usr/local/bin/
-	chmod 775 /usr/local/bin/calc
+install: ic
+	mkdir -p  /usr/local/bin/
+	cp -f $<  /usr/local/bin/
+	chmod 775 /usr/local/bin/$<
