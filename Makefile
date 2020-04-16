@@ -1,15 +1,21 @@
-calc: main.c y.tab.o scanner.o config.h
-	tcc -o $@ main.c scanner.o y.tab.o
+CC = clang
 
-scanner.o:
-y.tab.c: parser.y
-	yacc -d parser.y
-y.tab.h: y.tab.c
-y.tab.o: y.tab.c y.tab.h
+calc: parser.c config.h
+	$(CC) -o $@ $<
 
-.PHONY: clear install
+#scanner.o: y.tab.o
+#y.tab.c: parser.y
+#	yacc -d parser.y
+#y.tab.h: y.tab.c
+#y.tab.o: y.tab.c y.tab.h
+#
+.PHONY: clear install test
 
-clear:
+
+test: calc
+	cat test.txt | ./calc
+
+clean:
 	rm -f *.o
 	rm -f scanner.c
 

@@ -1,0 +1,13 @@
+1 + 0
+_*2 + 0
+1 + 1*2
+5 - 1     # comment
+1 + (4)
+2 + (2*2)
+-1 + 8
++4 + +4
++2 * +2 + 5
+33
+x _+1  # hex view
+o  # octal view
+d  # decimal view

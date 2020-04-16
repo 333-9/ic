@@ -1,9 +1,5 @@
-/*
- * calc config
- */
+/* calc config */
 
-static const char  ps1_def[]   = "> ";
-static const char  ps1_color[] = "\x1b[32m> \x1b[m";
-static const char *ps1         = ps1_def;
-static       bool  show_prompt = false;
-static const bool  exit_on_err = false;
+static const char *ps = ": ";
+static const int   show_prompt = 0;
+static const int   exit_on_err = 0; // TODO
