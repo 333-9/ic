@@ -9,7 +9,7 @@ ic: parser.c config.h
 .PHONY: clear install test
 
 test: ic
-	cat test.txt | ./ic
+	./ic -e test.txt
 
 clean:
 	rm -f *.o
