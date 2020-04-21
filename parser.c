@@ -168,8 +168,9 @@ int
 main(int argc, char *argv[])
 {
 	int c, i;
-	char *form = "%ld\n";
+	const char *form = format_default;
 	file = stdin;
+	// ---
 	for (i = 1; i < argc; i++) {
 		if (*argv[i] != '-') {
 			if (file != stdin)
@@ -187,7 +188,7 @@ main(int argc, char *argv[])
 				puts("usage: ic [-peq] [-hv] file");
 				return 0;
 			case 'v':
-				puts("ic version 0");
+				puts("ic version 1");
 				return 0;
 			};
 		};
@@ -207,9 +208,9 @@ main(int argc, char *argv[])
 		case 'q':
 			return 0;
 		case '\n': ungetc(c, file); break;
-		case 'x':  form = "%lx\n";    break;
-		case 'o':  form = "%lo\n";    break;
-		case 'd':  form = "%ld\n";    break;
+		case 'x':  form = format_hex;     break;
+		case 'o':  form = format_octal;   break;
+		case 'd':  form = format_decimal; break;
 		case 'r':
 			for (i = 0; i < 10; i++) {
 				printf("%d = ", i);
