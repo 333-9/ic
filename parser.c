@@ -168,7 +168,7 @@ int
 main(int argc, char *argv[])
 {
 	int c, i;
-	char *form = "%d\n";
+	char *form = "%ld\n";
 	file = stdin;
 	for (i = 1; i < argc; i++) {
 		if (*argv[i] != '-') {
@@ -207,9 +207,9 @@ main(int argc, char *argv[])
 		case 'q':
 			return 0;
 		case '\n': ungetc(c, file); break;
-		case 'x':  form = "%x\n";    break;
-		case 'o':  form = "%o\n";    break;
-		case 'd':  form = "%d\n";    break;
+		case 'x':  form = "%lx\n";    break;
+		case 'o':  form = "%lo\n";    break;
+		case 'd':  form = "%ld\n";    break;
 		case 'r':
 			for (i = 0; i < 10; i++) {
 				printf("%d = ", i);
