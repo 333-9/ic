@@ -18,24 +18,18 @@ ic [-peq] [file]
 ## usage
 Commands:
   * q  exit ic
-  * d  decimal output format
-  * o  octal format
-  * x  hexadecimal format
-  * r  print contents of all registers
+  * D  decimal output format
+  * O  octal format
+  * X  hexadecimal format
+  * R  print contents of all registers
 
 -----------------------------------------------
 
 ```
     # shell like comments
     # There are 10 registers (0-9).
-    0 = 5       # assign values to registers
-    3 = $0 * 3  # get register values with '$'
+    a = 5       # assign values to registers
+    b = a * 3   # get register values with '$'
     1 << 63     # long int  values
-    ~ _         # '_' returns previous result
-```
-
-```
-all valid operators:
-	( )  ~  *  /  %
-	-  +  <<  >>  &  |  ^
+    _ + a + b   # '_' returns previous result
 ```
