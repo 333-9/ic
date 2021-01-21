@@ -12,20 +12,24 @@
 #include <err.h>
 
 #include "config.h"
+//#include "tree.c"
 
 
-long prev_val = 0;
-long reg_val[10] = { 0 };
+unsigned long prev_val = 0;
+	unsigned long reg_val[7] = { 0 };
 jmp_buf jmp;
 FILE *file;
 
 
 
+static long parse_paren();
+static char parse_space();
 static long parse_term();
 static long parse_expr();
+static void p_error(char *, char);
 
 
-void
+static void
 p_error(char *s, char c)
 {
 	if (exit_on_err) {
@@ -45,19 +49,7 @@ p_error(char *s, char c)
 	};
 }
 
-
-char
-parse_reg()
-{
-	char c;
-	c = getc(file);
-	if (c < '0' || c > '9')
-		p_error("digit expected, not %c", c);
-	return c - '0';
-}
-
-
-long
+static long
 parse_paren()
 {
 	long val;
@@ -67,8 +59,7 @@ parse_paren()
 	return val;
 }
 
-
-char
+static char
 parse_space()
 {
 	char c;
@@ -77,24 +68,35 @@ parse_space()
 	return c;
 }
 
-
 static long
 parse_term()
 {
 	long val;
-	char c;
+	char c, r;
 	c = parse_space();
+	if (c == '\n') return 0;
 	ungetc(c, file);
 	// scanf consumes '+' & '-'
 	if (fscanf(file, "%li", &val) < 1) {
-		if (!strchr("+-", c))
+		if (!strchr("+-", c)) {
 			c = parse_space();
-		switch (c) {
+		};
+		if (c >= 'a' && c <= 'f') {
+			r = c - 'a';
+			c = parse_space();
+			if (c == '=') {
+				val = parse_expr();
+				reg_val[r] = val;
+				return val;
+			} else {
+				ungetc(c, file);
+				val = reg_val[r];
+			};
+		} else switch (c) {
 		case '~':  val = ~ parse_term();  break;
 		case '-':  val = - parse_term();  break;
 		case '+':  val = + parse_term();  break;
 		case '_':  val = prev_val;  break;
-		case '$':  val = reg_val[parse_reg()];  break;
 		case '(':  val = parse_paren();  break;
 		case ')':  p_error("')' unexpected", 0);
 		case '#':
@@ -115,7 +117,6 @@ parse_term()
 		return val;
 	};
 }
-
 
 static long
 parse_expr()
@@ -152,8 +153,8 @@ parse_expr()
 			else
 				p_error("register index too high", 0);
 		case '#':
-		case '\n':
 		case ')':
+		case '\n':
 			ungetc(c, file);
 		case -1:
 			return val;
@@ -162,7 +163,6 @@ parse_expr()
 		};
 	};
 }
-
 
 int
 main(int argc, char *argv[])
@@ -206,14 +206,15 @@ main(int argc, char *argv[])
 			if (prompt) putc('\n', stdout);
 			return 0;
 		case 'q':
+		case 'Q':
 			return 0;
 		case '\n': ungetc(c, file); break;
-		case 'x':  form = format_hex;     break;
-		case 'o':  form = format_octal;   break;
-		case 'd':  form = format_decimal; break;
-		case 'r':
-			for (i = 0; i < 10; i++) {
-				printf("%d = ", i);
+		case 'X':  form = format_hex;     break;
+		case 'O':  form = format_octal;   break;
+		case 'D':  form = format_decimal; break;
+		case 'R':
+			for (i = 0; i < 6; i++) {
+				printf("%c = ", 'a' +i);
 				printf(form, reg_val[i]);
 			};
 			fputs("_ = ", stdout);
