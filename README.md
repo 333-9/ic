@@ -1,6 +1,6 @@
 # ic - intiger calculator
 
-Small command line calculator with C-like syntax
+Small command line calculator
 
 
 ## arguments
@@ -17,19 +17,19 @@ ic [-peq] [file]
 
 ## usage
 Commands:
-  * q  exit ic
-  * D  decimal output format
-  * O  octal format
-  * X  hexadecimal format
-  * R  print contents of all registers
+  * .q  exit ic
+  * .d  decimal output format
+  * .o  octal format
+  * .x  hexadecimal format
+  * .r  print contents of all registers
+  * .c  clear the screen
 
 -----------------------------------------------
 
 ```
-    # shell like comments
-    # There are 10 registers (0-9).
-    a = 5       # assign values to registers
-    b = a * 3   # get register values with '$'
-    1 << 63     # long int  values
-    _ + a + b   # '_' returns previous result
+1+2*3  # infix expressions
+1 < 2  # bit shifting
+1 | _  # _ represents previous result
+a += _ # registers: a-z
+.o     # changing output format
 ```
